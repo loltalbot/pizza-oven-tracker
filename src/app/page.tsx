@@ -1,22 +1,13 @@
-export default function Home() {
-  const ovens = [
-    {
-      name: "Gozney Roccbox",
-      price: "£299",
-    },
-    {
-      name: "Gozney Arc Lite",
-      price: "£549",
-    },
-    {
-      name: "Solo Stove Pi Prime",
-      price: "£219",
-    },
-    {
-      name: "Ooni Koda 12",
-      price: "£249",
-    },
-  ];
+import { supabase } from "../../lib/supabase";
+
+export default async function Home() {
+  const { data: ovens } = await supabase
+    .from("products")
+    .select("*");
+
+  const { data: prices } = await supabase
+    .from("prices")
+    .select("*");
 
   return (
     <main className="min-h-screen bg-slate-900 text-white p-8">
@@ -30,22 +21,38 @@ export default function Home() {
         </p>
 
         <div className="grid gap-4">
-          {ovens.map((oven) => (
-            <div
-              key={oven.name}
-              className="bg-slate-800 rounded-xl p-6 border border-slate-700"
-            >
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">
-                  {oven.name}
-                </h2>
+          {ovens?.map((oven) => {
+            const priceRecord = prices?.find(
+              (p) => p.product_id === oven.id
+            );
 
-                <span className="text-2xl font-bold text-green-400">
-                  {oven.price}
-                </span>
+            return (
+              <div
+                key={oven.id}
+                className="bg-slate-800 rounded-xl p-6 border border-slate-700"
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-xl font-semibold">
+                      {oven.name}
+                    </h2>
+
+                    {priceRecord && (
+                      <p className="text-slate-400 text-sm">
+                        {priceRecord.retailer}
+                      </p>
+                    )}
+                  </div>
+
+                  <span className="text-2xl font-bold text-green-400">
+                    {priceRecord
+                      ? `£${priceRecord.price}`
+                      : "Coming Soon"}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </main>
