@@ -22,10 +22,12 @@ export default async function ProductPage({
     .eq("product_id", id)
     .order("price", { ascending: true });
 
+  const lowestPrice = prices?.[0]?.price;
+  const highestPrice = prices?.[prices.length - 1]?.price;
+
   return (
     <main className="min-h-screen bg-slate-900 text-white p-8">
       <div className="max-w-4xl mx-auto">
-
         <Link
           href="/"
           className="inline-block mb-6 text-slate-400 hover:text-white"
@@ -33,9 +35,31 @@ export default async function ProductPage({
           ← Back to tracker
         </Link>
 
-        <h1 className="text-4xl font-bold mb-8">
+        <h1 className="text-4xl font-bold mb-4">
           {oven?.name}
         </h1>
+
+        <div className="bg-slate-800 rounded-xl p-4 border border-slate-700 mb-6">
+          <div className="flex gap-8">
+            <div>
+              <p className="text-sm text-slate-400">
+                Lowest
+              </p>
+              <p className="text-2xl font-bold text-green-400">
+                £{lowestPrice}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-sm text-slate-400">
+                Highest
+              </p>
+              <p className="text-2xl font-bold text-red-400">
+                £{highestPrice}
+              </p>
+            </div>
+          </div>
+        </div>
 
         <div className="space-y-4">
           {prices?.map((price) => (
@@ -44,11 +68,20 @@ export default async function ProductPage({
               className="bg-slate-800 rounded-xl p-4 border border-slate-700 flex justify-between items-center"
             >
               <div>
-                <p>{price.retailer}</p>
+                <p className="font-medium">
+                  {price.retailer}
+                </p>
+
+                <p className="text-xs text-slate-400">
+                  Updated:{" "}
+                  {new Date(price.checked_at).toLocaleDateString(
+                    "en-GB"
+                  )}
+                </p>
               </div>
 
               <div className="flex items-center gap-4">
-                <span className="text-green-400 font-bold">
+                <span className="text-green-400 font-bold text-xl">
                   £{price.price}
                 </span>
 
