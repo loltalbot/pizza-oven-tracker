@@ -1,6 +1,5 @@
+import Link from "next/link";
 import { supabase } from "../../lib/supabase";
-
-export const instant = false;
 
 export default async function Home() {
   const { data: ovens } = await supabase
@@ -24,35 +23,41 @@ export default async function Home() {
 
         <div className="grid gap-4">
           {ovens?.map((oven) => {
-            const priceRecord = prices?.find(
+            const productPrices = prices?.filter(
               (p) => p.product_id === oven.id
             );
 
+            const priceRecord = productPrices
+              ?.sort((a, b) => a.price - b.price)[0];
+
             return (
-              <div
+              <Link
                 key={oven.id}
-                className="bg-slate-800 rounded-xl p-6 border border-slate-700"
+                href={`/product/${oven.id}`}
+                className="block"
               >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h2 className="text-xl font-semibold">
-                      {oven.name}
-                    </h2>
+                <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-green-500 hover:bg-slate-750 transition-all">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h2 className="text-xl font-semibold">
+                        {oven.name}
+                      </h2>
 
-                    {priceRecord && (
-                      <p className="text-slate-400 text-sm">
-                        {priceRecord.retailer}
-                      </p>
-                    )}
+                      {priceRecord && (
+                        <p className="text-slate-400 text-sm">
+                          {priceRecord.retailer}
+                        </p>
+                      )}
+                    </div>
+
+                    <span className="text-2xl font-bold text-green-400">
+                      {priceRecord
+                        ? `£${priceRecord.price}`
+                        : "Coming Soon"}
+                    </span>
                   </div>
-
-                  <span className="text-2xl font-bold text-green-400">
-                    {priceRecord
-                      ? `£${priceRecord.price}`
-                      : "Coming Soon"}
-                  </span>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
