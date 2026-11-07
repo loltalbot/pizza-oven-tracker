@@ -1,6 +1,6 @@
 import { supabase } from "../../lib/supabase";
 
-export const revalidate = 0;
+export const instant = false;
 
 export default async function Home() {
   const { data: ovens } = await supabase
