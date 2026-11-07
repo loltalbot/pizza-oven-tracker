@@ -1,5 +1,5 @@
 import { supabase } from "../../../../lib/supabase";
-
+export const instant = false;
 export default async function ProductPage({
   params,
 }: {

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
-
+export const instant = false;
 export default async function Home() {
   const { data: ovens } = await supabase
     .from("products")
